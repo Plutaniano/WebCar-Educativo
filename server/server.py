@@ -1,0 +1,29 @@
+from flask import Flask, render_template, request
+import requests
+
+app = Flask(__name__)
+
+arduino_addr = '127.0.0.1'
+arduino_port = 0
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/bind')
+def bind():
+    try:
+        arduino_addr = request.args.get('addr')
+        arduino_port = request.args.get('port') 
+        return 'ok'
+    except:
+        return 'erro'
+
+@app.route('/cmd')
+def move():
+    cmdname = request.args.get('cmdname')
+    cmdstatus = request.args.get('cmdstatus')
+    r = requests.get(f'{arduino_addr}:{arduino_port}/?cmdname={cmdname}&cmdstatus={cmdstatus}')
+    return r.status_code
+
+app.run(host='192.168.1.217', port='80')

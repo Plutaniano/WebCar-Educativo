@@ -1,0 +1,25 @@
+connectBtn {
+    width: 100px;
+    height: 50px;
+    float: left;
+}
+
+.dot {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.connected {
+    background-color: green;
+}
+
+.disconnected {
+    background-color: red;
+}
+
+#arrow-table button{
+    height: 40px;
+    width: 60px;
+}
