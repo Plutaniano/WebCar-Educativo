@@ -1,5 +1,8 @@
 // BIBLIOTECAS
-
+#include <Arduino.h>
+#include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
+#include <WiFiClient.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
@@ -8,71 +11,95 @@
 const char* SSID = "Lucas2"; // rede wifi
 const char* PASSWORD = "catarina0701"; // senha da rede wifi
 
-String SERVIDOR = "http://189.62.13.193/";
-
-// DECLARAÇÃO DAS FUNÇÕES
-
-void initSerial();
-void initWiFi();
-void httpRequest(String path);
+const String SERVIDOR = "http://192.168.1.217/";
 
 // OBJETOS
 
-WiFiClient client;
-HTTPClient http;
-
-// CÓDIGO
-
-void setup() {
-  Serial.begin(115200);
-  initWiFi();
-  httpRequest("bind?addr=" + WiFi.localIP().toString() + "&port=5000"); // Declarando ao servidor o IP do arduino
-}
-
-void loop() {
-}
+ESP8266WebServer server(80);
 
 // FUNÇÕES
 
-void httpRequest(String path) {
-  String payload = makeRequest(path);
-
-  if (!payload) {
-    return;
-  }
-
-  Serial.println("##[RESULT]## ==> " + payload);
+void handleRoot() {
+  server.send(200, "text/plain", "Servidor ligado");
 }
 
-String makeRequest(String path) {    
-  http.begin(SERVIDOR + path);
-  int httpCode = http.GET();
-
-  if (httpCode < 0) {
-    Serial.println("request error - " + httpCode);
-    return "";
-  }
-
-  if (httpCode != HTTP_CODE_OK) {
-    return "";
-  }
-
-  String response =  http.getString();
-  http.end();
-  return response;
+void handleNotFound() {
+  String message = "404";
+  server.send(404, "text/plain", message);
 }
 
-
-void initWiFi() {
-  delay(10);
-  Serial.println("Conectando-se em: " + String(SSID));
-
+void wifi_init()
+{
+  WiFi.mode(WIFI_STA);
   WiFi.begin(SSID, PASSWORD);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(100);
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(1000);
     Serial.print(".");
   }
-  Serial.println();
-  Serial.print("Conectado na Rede " + String(SSID) + " | IP => ");
+
+  Serial.println("\nConectado a");
+  Serial.println(SSID);
+  Serial.print("IP: ");
   Serial.println(WiFi.localIP());
+
+  if (MDNS.begin("esp8266"))
+  {
+    Serial.println("DNS OK!");
+  }
+}
+
+void HTTP_request()
+{
+  WiFiClient client;
+  HTTPClient http;
+
+  if (http.begin(client, SERVIDOR + "/bind"))
+  {
+    int httpStatus = http.GET();
+    Serial.println("HTTP GET CODE" + httpStatus);
+    
+    if (httpStatus > 0)
+    {
+      if (httpStatus == HTTP_CODE_OK || httpStatus == HTTP_CODE_MOVED_PERMANENTLY)
+      {
+        String payload = http.getString();
+        Serial.println(payload);
+      } else {
+        Serial.printf("ERRO HTTP %s\n", http.errorToString(httpStatus).c_str());
+      }
+
+      http.end();
+    }
+  } else {
+    Serial.printf("HTTP Sem conexão\n");
+  }
+}
+
+void ledOn(){};
+void ledOff(){};
+
+// MAIN
+
+void setup()
+{
+  Serial.begin(115200);
+  
+  wifi_init();
+
+  server.on("/", handleRoot);
+  server.onNotFound(handleNotFound);
+  
+  server.on("/ledon", ledOn);
+  server.on("/ledoff", ledOff);
+
+  server.begin();
+  HTTP_request();
+}
+
+void loop()
+{
+  server.handleClient();
+  MDNS.update();
 }
