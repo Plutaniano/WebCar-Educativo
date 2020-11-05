@@ -29,8 +29,8 @@ def buzzer():
         freq = int(request.args.get('freq'))
         sec = int(request.args.get('sec'))
         if (freq == None and sec == None) or\
-        not (0 <= freq <= 5000) or\
-        sec > 10:
+            not (0 <= freq <= 5000) or\
+            sec > 10:
             raise ValueError
     except:
         return "Frequência e/ou tempo invalido(s).", status.HTTP_400_BAD_REQUEST        
