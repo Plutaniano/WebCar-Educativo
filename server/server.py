@@ -1,33 +1,68 @@
-from flask import Flask, render_template, request
 import requests
+
+from flask import Flask, render_template, request
+from flask_api import status
 
 app = Flask(__name__)
 
-
-# back-end
-
+# ===============
+#    back-end
+# ===============
 arduino_addr = '127.0.0.1'
-arduino_port = 0
+arduino_port = 50
 
-@app.route('/bind')
-def bind():
-    try:
-        arduino_addr = request.args.get('addr')
-        arduino_port = request.args.get('port') 
-        return 'ok'
-    except:
+@app.route('/conectar')
+def conectar():
+    arduino_addr = request.args.get('addr')
+    arduino_port = request.args.get('port')
+
+    if arduino_port != None and arduino_addr != None:
+        print(f'[ERRO]\t WebCar tentou conectar sem IP e porta.')
         return 'erro'
 
-@app.route('/cmd')
-def move():
-    cmdname = request.args.get('cmdname')
-    cmdstatus = request.args.get('cmdstatus')
-    r = requests.get(f'{arduino_addr}:{arduino_port}/?cmdname={cmdname}&cmdstatus={cmdstatus}')
+    print(f'WebCar conectado. [{arduino_addr}:{arduino_port}]')
+    return 'ok', status.HTTP_200_OK
+
+@app.route('/buzzer')
+def buzzer():
+    try:
+        freq = int(request.args.get('freq'))
+        sec = int(request.args.get('sec'))
+        if (freq == None and sec == None) or\
+        not (0 <= freq <= 5000) or\
+        sec > 10:
+            raise ValueError
+    except:
+        return "Frequência e/ou tempo invalido(s).", status.HTTP_400_BAD_REQUEST        
+
+    r = requests.get(f'{arduino_addr}:{arduino_port}/buzzer?freq={freq}&sec={sec}')
+    return r.status_code
+
+@app.route('/led')
+def led():
+    action = request.args.get('action')
+    value = request.args.get('value')
+
+    if action not in ['set', 'toggle'] or (action == 'set' and value == None):
+        return "Action invalida.", status.HTTP_400_BAD_REQUEST
+
+    if action == 'toggle':
+        r = requests.get(f'{arduino_addr}:{arduino_port}/ledtoggle')
+    
+    if action == 'set':
+        if value == 1:
+            value = 'on'
+        else:
+            value = 'off'
+
+        r = request.get(f'{arduino_addr}:{arduino_port}/led{value}')
+    
     return r.status_code
 
 
-
-# front-end
+# ================
+#    front-end
+# ================
 
 @app.route('/')
 def inicio():
@@ -57,4 +92,4 @@ def componentesroot():
 def componentes(componente):
     return render_template('content_template.html', content=f'/componentes/{componente}.html')
 
-app.run(host='192.168.1.217', port='5000', debug=True)
+app.run(host='127.0.0.1', port='5000', debug=True)
