@@ -12,21 +12,41 @@ const char* SSID = "Lucas2"; // rede wifi
 const char* PASSWORD = "catarina0701"; // senha da rede wifi
 
 const String SERVIDOR = "http://192.168.1.217/";
+const int PORT = 80;
 
 // OBJETOS
 
-ESP8266WebServer server(80);
+ESP8266WebServer server(PORT);
 
-// FUNÇÕES
+// Endpoints
 
-void handleRoot() {
+void handleRoot()
+{
   server.send(200, "text/plain", "Servidor ligado");
-}
-
-void handleNotFound() {
+};
+void handleNotFound() 
+{
   String message = "404";
   server.send(404, "text/plain", message);
 }
+void ledOn()
+{
+
+};
+void ledOff() 
+{
+
+};
+void ledToggle()
+{
+
+};
+void buzzer()
+{
+
+};
+
+// Funções auxiliares
 
 void wifi_init()
 {
@@ -49,13 +69,12 @@ void wifi_init()
     Serial.println("DNS OK!");
   }
 }
-
 void HTTP_request()
 {
   WiFiClient client;
   HTTPClient http;
 
-  if (http.begin(client, SERVIDOR + "/bind"))
+  if (http.begin(client, SERVIDOR + "/conectar"))
   {
     int httpStatus = http.GET();
     Serial.println("HTTP GET CODE" + httpStatus);
@@ -77,9 +96,6 @@ void HTTP_request()
   }
 }
 
-void ledOn(){};
-void ledOff(){};
-
 // MAIN
 
 void setup()
@@ -93,6 +109,8 @@ void setup()
   
   server.on("/ledon", ledOn);
   server.on("/ledoff", ledOff);
+  server.on("/ledtoggle", ledToggle);
+  server.on("/buzzer", buzzer);
 
   server.begin();
   HTTP_request();
