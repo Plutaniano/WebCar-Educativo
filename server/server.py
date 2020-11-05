@@ -3,6 +3,9 @@ import requests
 
 app = Flask(__name__)
 
+
+# back-end
+
 arduino_addr = '127.0.0.1'
 arduino_port = 0
 
@@ -23,6 +26,9 @@ def move():
     return r.status_code
 
 
+
+# front-end
+
 @app.route('/')
 def inicio():
     return render_template('content_template.html', content='paginas/inicio.html')
@@ -42,6 +48,10 @@ def programacao():
 @app.route('/sobre')
 def sobre():
     return render_template('content_template.html', content='paginas/sobre.html')
+
+@app.route('/componentes')
+def componentesroot():
+    return render_template('content_template.html', content='paginas/componentes.html')
 
 @app.route('/componentes/<componente>')
 def componentes(componente):
