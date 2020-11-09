@@ -1,16 +1,23 @@
+# biblioteca requests, para realizar requests HTTP
 import requests
 
+# biblioteca Flask, responsavel por rodar o webserver
 from flask import Flask, render_template, request
 from flask_api import status
 
+# criação do objeto app, onde o webserver irá rodar
 app = Flask(__name__)
 
 # ===============
 #    back-end
 # ===============
+
+# inicialização do endereço do arduino para valores padrões
 arduino_addr = '127.0.0.1'
 arduino_port = 50
 
+# /conectar
+# recebe parametros para estabelecer IP e porta do carro
 @app.route('/conectar')
 def conectar():
     arduino_addr = request.args.get('addr')
@@ -23,6 +30,9 @@ def conectar():
     print(f'WebCar conectado. [{arduino_addr}:{arduino_port}]')
     return 'ok', status.HTTP_200_OK
 
+# /buzzer
+# recebe frequencia e duração do som
+# filtra para valores aceitaveis e envia comando ao carro
 @app.route('/buzzer')
 def buzzer():
     try:
@@ -38,6 +48,9 @@ def buzzer():
     r = requests.get(f'{arduino_addr}:{arduino_port}/buzzer?freq={freq}&sec={sec}')
     return r.status_code
 
+# /led
+# recebe um parametro para togglar ou setar LED no carro
+# envia comando ao carro
 @app.route('/led')
 def led():
     action = request.args.get('action')
@@ -64,6 +77,8 @@ def led():
 #    front-end
 # ================
 
+# cada função é responsavel por uma página
+# carrega a template padrão e injeta o conteudo referente a página requisitada 
 @app.route('/')
 def inicio():
     return render_template('content_template.html', content='paginas/inicio.html')
@@ -92,4 +107,5 @@ def componentesroot():
 def componentes(componente):
     return render_template('content_template.html', componente=componente, content=f'/componentes/{componente}.html')
 
-app.run(host='127.0.0.1', port='5000', debug=True)
+# roda o servidor no ip e porta especificado
+app.run(host='192.168.1.217', port='5000', debug=True)
