@@ -90,6 +90,6 @@ def componentesroot():
 
 @app.route('/componentes/<componente>')
 def componentes(componente):
-    return render_template('content_template.html', content=f'/componentes/{componente}.html')
+    return render_template('content_template.html', componente=componente, content=f'/componentes/{componente}.html')
 
 app.run(host='127.0.0.1', port='5000', debug=True)
