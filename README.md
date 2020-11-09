@@ -2,10 +2,7 @@
 
 ## Requisitos
 
-* Definição dos Requisitos
-* Perspectiva do produto
-* Descrição do funcionamento.
-* Funções para o usuário.
+
 
 ## Definição dos componentes e fornecedores
 
