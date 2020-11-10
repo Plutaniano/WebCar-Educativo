@@ -13,8 +13,8 @@ app = Flask(__name__)
 # ===============
 
 # inicialização do endereço do arduino para valores padrões
-arduino_addr = '127.0.0.1'
-arduino_port = 50
+arduino_addr = '192.168.1.75'
+arduino_port = 80
 
 # /conectar
 # recebe parametros para estabelecer IP e porta do carro
@@ -23,7 +23,7 @@ def conectar():
     arduino_addr = request.args.get('addr')
     arduino_port = request.args.get('port')
 
-    if arduino_port != None and arduino_addr != None:
+    if arduino_port == None and arduino_addr == None:
         print(f'[ERRO]\t WebCar tentou conectar sem IP e porta.')
         return 'erro'
 
@@ -46,7 +46,7 @@ def buzzer():
         return "Frequência e/ou tempo invalido(s).", status.HTTP_400_BAD_REQUEST        
 
     r = requests.get(f'{arduino_addr}:{arduino_port}/buzzer?freq={freq}&sec={sec}')
-    return r.status_code
+    return str(r.status_code)
 
 # /led
 # recebe um parametro para togglar ou setar LED no carro
@@ -60,7 +60,7 @@ def led():
         return "Action invalida.", status.HTTP_400_BAD_REQUEST
 
     if action == 'toggle':
-        r = requests.get(f'{arduino_addr}:{arduino_port}/ledtoggle')
+        r = requests.get(f'http://{arduino_addr}:{arduino_port}/ledtoggle')
     
     if action == 'set':
         if value == 1:
@@ -68,9 +68,9 @@ def led():
         else:
             value = 'off'
 
-        r = request.get(f'{arduino_addr}:{arduino_port}/led{value}')
+        r = request.get(f'http://{arduino_addr}:{arduino_port}/led{value}')
     
-    return r.status_code
+    return str(r.status_code)
 
 
 # ================
@@ -108,4 +108,4 @@ def componentes(componente):
     return render_template('content_template.html', componente=componente, content=f'/componentes/{componente}.html')
 
 # roda o servidor no ip e porta especificado
-app.run(host='192.168.1.217', port='5000', debug=True)
+app.run(host='192.168.1.217', port='80', debug=True)

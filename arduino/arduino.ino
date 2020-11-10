@@ -11,19 +11,23 @@
 const char* SSID = "Lucas2"; // rede wifi
 const char* PASSWORD = "catarina0701"; // senha da rede wifi
 
-const String SERVIDOR = "http://192.168.1.217/";
+const String SERVIDOR = "http://192.168.1.217";
 const int PORT = 80;
 
 // OBJETOS
 
 ESP8266WebServer server(PORT);
 
+// PINS
+
+int led = LED_BUILTIN;
+
 // Endpoints
 
 void handleRoot()
 {
   server.send(200, "text/plain", "Servidor ligado");
-};
+}
 void handleNotFound() 
 {
   String message = "404";
@@ -32,19 +36,21 @@ void handleNotFound()
 void ledOn()
 {
 
-};
+}
 void ledOff() 
 {
 
-};
+}
 void ledToggle()
 {
-
-};
+  int status = digitalRead(led);
+  digitalWrite(led, !status);
+  server.send(200, "text/plain", String(!status));
+}
 void buzzer()
 {
 
-};
+}
 
 // Funções auxiliares
 
@@ -74,7 +80,7 @@ void HTTP_request()
   WiFiClient client;
   HTTPClient http;
 
-  if (http.begin(client, SERVIDOR + "/conectar"))
+  if (http.begin(client, SERVIDOR + "/conectar?addr=" + WiFi.localIP().toString().c_str() + "&port=" + PORT))
   {
     int httpStatus = http.GET();
     Serial.println("HTTP GET CODE" + httpStatus);
@@ -101,6 +107,8 @@ void HTTP_request()
 void setup()
 {
   Serial.begin(115200);
+  Serial.println("booting");
+  pinMode(led, OUTPUT);
   
   wifi_init();
 
