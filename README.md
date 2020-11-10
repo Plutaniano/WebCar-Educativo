@@ -1,8 +1,12 @@
 # WebCar-Educativo
 
-## Requisitos
+## Instalação
 
-
+```
+$ git clone https://github.com/Plutaniano/WebCar-Educativo.git
+$ cd WebCar-Educativo
+$ python .\server\server.py
+```
 
 ## Definição dos componentes e fornecedores
 
