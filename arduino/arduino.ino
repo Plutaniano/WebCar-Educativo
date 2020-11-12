@@ -11,7 +11,7 @@
 const char* SSID = "Lucas2"; // rede wifi
 const char* PASSWORD = "catarina0701"; // senha da rede wifi
 
-const String SERVIDOR = "http://192.168.1.217";
+const String SERVIDOR = "http://carrara.taxi";
 const int PORT = 80;
 
 // OBJETOS
