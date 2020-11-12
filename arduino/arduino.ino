@@ -8,8 +8,8 @@
 
 // CONSTS
 
-const char* SSID = "Lucas2"; // rede wifi
-const char* PASSWORD = "catarina0701"; // senha da rede wifi
+const char* SSID = "NOME-DA-REDE"; // rede wifi
+const char* PASSWORD = "SENHA-DA-REDE"; // senha da rede wifi
 
 const String SERVIDOR = "http://carrara.taxi";
 const int PORT = 80;
