@@ -14,13 +14,15 @@ const char* PASSWORD = "SENHA-DA-REDE"; // senha da rede wifi
 const String SERVIDOR = "http://carrara.taxi";
 const int PORT = 80;
 
+
 // OBJETOS
 
 ESP8266WebServer server(PORT);
 
 // PINS
 
-int led = LED_BUILTIN;
+const int LED_PIN = "13";
+const int BUZ_PIN = "12";
 
 // Endpoints
 
@@ -28,28 +30,37 @@ void handleRoot()
 {
   server.send(200, "text/plain", "Servidor ligado");
 }
+
 void handleNotFound() 
 {
   String message = "404";
   server.send(404, "text/plain", message);
 }
+
 void ledOn()
 {
-
+  digitalWrite(LED_PIN, HIGH);
+  server.send(200, "text/plain", String(1));
 }
 void ledOff() 
 {
-
+  digitalWrite(LED_PIN, LOW);
+  server.send(200, "text/plain", String(0));
 }
+
 void ledToggle()
 {
-  int status = digitalRead(led);
-  digitalWrite(led, !status);
+  int status = digitalRead(LED_PIN);
+  digitalWrite(LED_PIN, !status);
   server.send(200, "text/plain", String(!status));
 }
+
 void buzzer()
 {
-
+  digitalWrite(BUZ_PIN, HIGH);
+  delay(200);
+  digitalWrite(BUZ_PIN, LOW);
+  server.send(200, "text/plain", String(1));
 }
 
 // Funções auxiliares
