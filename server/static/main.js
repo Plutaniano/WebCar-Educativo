@@ -1,15 +1,3 @@
-connectIndicator = document.getElementById('connectIndicator')
-
-function connect() {
-    if (connectIndicator.classList.contains('disconnected')) {
-        connectIndicator.classList.remove('disconnected');
-        connectIndicator.classList.add('connected');                
-    } else {
-        connectIndicator.classList.remove('connected');
-        connectIndicator.classList.add('disconnected');        
-    }
-}
-
 
 function move(str) {
     fetch('/move?status=' + str)

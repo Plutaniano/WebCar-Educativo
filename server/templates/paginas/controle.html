@@ -5,23 +5,82 @@
       <table class="mx-auto">
             <thead>
               <tr>
-                <th></th>
-                <th><button type="button" class="btn btn-dark">⬆️</button></th>
-                <th></th>
+                <th><button type="button" id="up-left-arrow" class="btn btn-dark">↖</button></th>
+                <th><button type="button" id="up-arrow" class="btn btn-dark">⬆️</button></th>
+                <th><button type="button" id="up-right-arrow" class="btn btn-dark">↗️</button></th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><button type="button" class="btn btn-dark">⬅️</button></td>
-                <td><button type="button" class="btn btn-dark">🔔</button></td>
-                <td><button type="button" class="btn btn-dark">➡️</button></td> 
+                <td></td>
+                <td><button type="button" id="led-button" class="btn btn-dark">💡</button></td>
+                <td></td> 
               </tr>
               <tr>
-                <td></td>
-                <td><button type="button" class="btn btn-dark">⬇️</button></td>
-                <td></td>
+                <td><button type="button" id="down-left-arrow" class="btn btn-dark">↙️</button></td>
+                <td><button type="button" id="down-arrow" class="btn btn-dark">⬇️</button></td>
+                <td><button type="button" id="down-right-arrow" class="btn btn-dark">↘</button></td>
               </tr>
             </tbody>
         </table>
     </div>
 </div>
+<script>
+  
+function move(dir, side) {
+    fetch('/move?dir=' + dir + '&side=' + side)
+}
+
+function led(str) {
+    fetch('/led?action=toggle')
+}
+
+upLeftBtn = document.getElementById('up-left-arrow');
+upBtn = document.getElementById('up-arrow');
+upRightBtn = document.getElementById('up-right-arrow');
+
+downLeftBtn = document.getElementById('down-left-arrow');
+downBtn = document.getElementById('down-arrow');
+downRightBtn = document.getElementById('down-right-arrow');
+
+leftBtn = document.getElementById('left-arrow');
+rightBtn = document.getElementById('right-arrow');
+
+ledBtn = document.getElementById('led-button')
+
+upBtn.addEventListener('click', function(){
+    move('front', 'None');
+});
+
+upLeftBtn.addEventListener('click', function(){
+    move('front', 'left');
+});
+
+upRightBtn.addEventListener('click', function(){
+    move('front', 'right');
+});
+
+downBtn.addEventListener('click', function(){
+    move('down');
+});
+
+downLeftBtn.addEventListener('click', function(){
+    move('down', 'left');
+});
+
+downRightBtn.addEventListener('click', function(){
+    move('down', 'right');
+});
+
+leftBtn.addEventListener('click', function(){
+    move('left');
+});
+
+rightBtn.addEventListener('click', function(){
+    move('right');
+});
+
+ledBtn.addEventListener('click', function(){
+    led()
+})
+</script>

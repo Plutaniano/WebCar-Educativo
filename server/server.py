@@ -45,8 +45,17 @@ def buzzer():
     except:
         return "Frequência e/ou tempo invalido(s).", status.HTTP_400_BAD_REQUEST        
 
-    r = requests.get(f'{arduino_addr}:{arduino_port}/buzzer?freq={freq}&sec={sec}')
+    r = requests.get(f'http://{arduino_addr}:{arduino_port}/buzzer?freq={freq}&sec={sec}')
     return str(r.status_code)
+
+@app.route('/move')
+def move():
+    dir = request.args.get('dir')
+    side = request.args.get('side')
+    r = requests.get(f'http://{arduino_addr}:{arduino_port}/move?dir={dir}&side={side}')
+
+    return str(r.status_code)
+    
 
 # /led
 # recebe um parametro para togglar ou setar LED no carro
@@ -108,4 +117,4 @@ def componentes(componente):
     return render_template('content_template.html', componente=componente, content=f'/componentes/{componente}.html')
 
 # roda o servidor no ip e porta especificado
-app.run(host='192.168.1.217', port='80', debug=True)
+app.run(host='192.168.1.217', port='5000', debug=True)
