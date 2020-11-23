@@ -48,6 +48,8 @@ def buzzer():
     r = requests.get(f'http://{arduino_addr}:{arduino_port}/buzzer?freq={freq}&sec={sec}')
     return str(r.status_code)
 
+# /move
+# recebe direção (frente, trás) e lado (direita, esquerda, None) que carrinho deve se mover
 @app.route('/move')
 def move():
     dir = request.args.get('dir')
