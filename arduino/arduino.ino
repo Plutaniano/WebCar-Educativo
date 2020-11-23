@@ -38,6 +38,11 @@ void handleNotFound()
   server.send(404, "text/plain", message);
 }
 
+void move()
+{
+//não implementado
+}
+
 void ledOn()
 {
   digitalWrite(LED_PIN, HIGH);
@@ -135,6 +140,7 @@ void setup()
   server.on("/ledoff", ledOff);
   server.on("/ledtoggle", ledToggle);
   server.on("/buzzer", buzzer);
+  server.on("/move", move);
 
   server.begin();
   HTTP_request();
