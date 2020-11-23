@@ -25,6 +25,7 @@ const int LED_PIN = "13";
 const int BUZ_PIN = "12";
 
 // Endpoints
+// cada um dos comandos tem uma função correspondente
 
 void handleRoot()
 {
@@ -65,6 +66,7 @@ void buzzer()
 
 // Funções auxiliares
 
+// inicializa coneção wifi
 void wifi_init()
 {
   WiFi.mode(WIFI_STA);
@@ -86,6 +88,8 @@ void wifi_init()
     Serial.println("DNS OK!");
   }
 }
+
+// http request para conexão inicial com o servidor
 void HTTP_request()
 {
   WiFiClient client;
@@ -123,9 +127,10 @@ void setup()
   
   wifi_init();
 
+
+  // handlers para cada um dos comandos
   server.on("/", handleRoot);
   server.onNotFound(handleNotFound);
-  
   server.on("/ledon", ledOn);
   server.on("/ledoff", ledOff);
   server.on("/ledtoggle", ledToggle);
